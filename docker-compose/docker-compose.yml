@@ -5,7 +5,8 @@ services:
     image: 'gcc:12.2'
     container_name: render
     volumes:
-      - ../test:/workspace/test
       - ../header:/workspace/header
+      - ../image:/workspace/image
+      - ../test:/workspace/test
     working_dir: /workspace
     tty: true
