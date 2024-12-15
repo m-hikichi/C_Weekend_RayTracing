@@ -6,7 +6,7 @@
 #include <random>
 #include <type_traits>
 
-template <typename T, typename U> T clamp(T x, U min, U max) {
+template <typename T> T clamp(T x, T min, T max) {
     if (x < min) return min;
     else if (max < x) return max;
     else return x;
