@@ -7,6 +7,7 @@ services:
     volumes:
       - ../header:/workspace/header
       - ../image:/workspace/image
+      - ../src:/workspace/src
       - ../test:/workspace/test
     working_dir: /workspace
     tty: true
