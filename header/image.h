@@ -12,14 +12,13 @@
 class Image
 {
 private:
-    int width;
-    int height;
-    int channels{3};
+    const int width;
+    const int height;
+    const int channels{3};
     Color **data;
 
 public:
     // コンストラクタ
-    Image() {}
     Image(int _width, int _height) : width(_width), height(_height)
     {
         data = new Color *[width];

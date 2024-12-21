@@ -7,9 +7,9 @@
 class Ray {
     private:
         // レイの始点座標
-        Vec3 origin;
+        const Vec3 origin;
         // レイの方向
-        Vec3 direction;
+        const Vec3 direction;
 
     public:
         // コンストラクタ
