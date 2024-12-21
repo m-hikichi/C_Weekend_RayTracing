@@ -56,9 +56,9 @@ public:
             {
                 Color c = data[x][y];
                 data[x][y] = Color(
-                    std::pow(c.r(), 1 / 2.2),
-                    std::pow(c.g(), 1 / 2.2),
-                    std::pow(c.b(), 1 / 2.2));
+                    std::pow(c.r, 1 / 2.2),
+                    std::pow(c.g, 1 / 2.2),
+                    std::pow(c.b, 1 / 2.2));
             }
         }
     }
@@ -73,9 +73,9 @@ public:
             for (int y = 0; y < height; y++)
             {
                 Color c = data[x][y];
-                auto r = clamp(c.r(), 0.0, 1.0);
-                auto g = clamp(c.g(), 0.0, 1.0);
-                auto b = clamp(c.b(), 0.0, 1.0);
+                auto r = clamp(c.r, 0.0, 1.0);
+                auto g = clamp(c.g, 0.0, 1.0);
+                auto b = clamp(c.b, 0.0, 1.0);
 
                 unsigned char ir = static_cast<unsigned char>(UCHAR_MAX * r);
                 unsigned char ig = static_cast<unsigned char>(UCHAR_MAX * g);
