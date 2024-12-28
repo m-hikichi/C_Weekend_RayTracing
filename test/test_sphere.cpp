@@ -15,6 +15,7 @@ TEST(SphereTest, Constructor)
 // 無効な半径で例外スローを確認
 TEST(SphereTest, InvalidRadiusThrowsException)
 {
+    EXPECT_THROW(Sphere invalid_sphere(Vec3(0), 0.0), Sphere::radius_exception);
     EXPECT_THROW(Sphere invalid_sphere(Vec3(0), -1.0), Sphere::radius_exception);
 }
 
@@ -33,6 +34,7 @@ TEST(SphereTest, IntersectRay)
     EXPECT_EQ(hit.get_distance(), 3);
     EXPECT_EQ(hit.get_hit_position(), Vec3(0, 0, -2));
     EXPECT_EQ(hit.get_hit_normal(), Vec3(0, 0, -1));
+    ASSERT_TRUE(hit.check_ray_outside_sphere());
 }
 
 // Sphere内部から始まるレイ
@@ -50,6 +52,7 @@ TEST(SphereTest, RayInsideSphere)
     EXPECT_EQ(hit.get_distance(), 0.5);
     EXPECT_EQ(hit.get_hit_position(), Vec3(0, 0, 1));
     EXPECT_EQ(hit.get_hit_normal(), Vec3(0, 0, 1));
+    ASSERT_FALSE(hit.check_ray_outside_sphere());
 }
 
 // RayがSphereを交差しない場合
