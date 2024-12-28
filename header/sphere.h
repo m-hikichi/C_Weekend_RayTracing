@@ -12,6 +12,20 @@ private:
     const Vec3 center;
     const double radius;
 
+    bool is_ray_outside_sphere(const Ray &ray, const Vec3 &normal) const
+    {
+        if (dot(ray.get_direction(), normal.normalize()) > 0)
+        {
+            // 内積が正の場合、レイと法線が同じ方向を向いているならレイは物体の内部にあり、falseを返す
+            return false;
+        }
+        else
+        {
+            // 内積が負の場合、レイと法線が逆方向を向いているならレイはオブジェクトの外側にあり、trueを返す
+            return true;
+        }
+    }
+
 public:
     // コンストラクタ
     Sphere(const Vec3 &_center, const double _radius) : center(_center), radius(_radius)
@@ -84,7 +98,8 @@ public:
             }
         }
 
-        return Hit(distance, ray(distance), ray(distance) - center, this);
+        Vec3 surface_normal = ray(distance) - center;
+        return Hit(distance, ray(distance), surface_normal, this, is_ray_outside_sphere(ray, surface_normal));
     }
 
     class radius_exception
