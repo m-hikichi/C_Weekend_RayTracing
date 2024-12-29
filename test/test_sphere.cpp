@@ -79,7 +79,7 @@ TEST(SphereTest, RayTangentToSphere)
     ASSERT_TRUE(result) << "Intersection test failed: Expected a valid Hit, but got nullopt.";
 
     Hit hit = *result;
-    EXPECT_GT(hit.get_distance(), 3.0);
+    EXPECT_EQ(hit.get_distance(), 4.0);
     EXPECT_EQ(hit.get_hit_position(), Vec3(0, 0, 0));
     EXPECT_EQ(hit.get_hit_normal(), Vec3(-1, 0, 0));
 }
