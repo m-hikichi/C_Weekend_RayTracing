@@ -4,11 +4,11 @@
 #include "../header/ray.h"
 #include "../header/sphere.h"
 #include "../header/hit.h"
+#include "../header/aggregate.h"
 
-Color ray_color(const Ray &r)
+Color ray_color(const Ray &r, const Aggregate& world)
 {
-    Sphere sphere(Vec3(0, 0, -1), 0.5);
-    std::optional<Hit> result = sphere.intersect(r);
+    std::optional<Hit> result = world.intersect(r);
     if (result)
     {
         Hit hit = *result;
@@ -34,6 +34,10 @@ int main()
     Vec3 vertical = Vec3(0, viewport_height, 0);
     Vec3 left_lower_corner = origin - horizon / 2 - vertical / 2 - Vec3(0, 0, focal_length);
 
+    Aggregate world;
+    world.add(std::make_shared<Sphere>(Vec3(0, 0, -1), 0.5));
+    world.add(std::make_shared<Sphere>(Vec3(0, -100.5, -1), 100));
+
     for (int h = 0; h < image_height; h++)
     {
         for (int w = 0; w < image_width; w++)
@@ -41,7 +45,7 @@ int main()
             double u = (double(w) + 0.5) / double(image_width);
             double v = 1.0 - (double(h) + 0.5) / double(image_height);
             Ray r(origin, left_lower_corner + u * horizon + v * vertical - origin);
-            Color pixel_color = ray_color(r);
+            Color pixel_color = ray_color(r, world);
             i.set_pixel(w, h, pixel_color);
         }
     }
