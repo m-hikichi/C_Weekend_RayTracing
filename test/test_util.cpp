@@ -22,7 +22,7 @@ TEST(UtilTest, RandomInteger) {
     constexpr int test_iterations = 1000;
 
     for (int i = 0; i < test_iterations; ++i) {
-        int value = rnd(min, max);
+        int value = generate_random_in_range(min, max);
         EXPECT_GE(value, min) << "Generated value is less than min";
         EXPECT_LE(value, max) << "Generated value is greater than max";
     }
@@ -35,7 +35,7 @@ TEST(UtilTest, RandomFloatingPoint) {
     constexpr int test_iterations = 1000;
 
     for (int i = 0; i < test_iterations; ++i) {
-        double value = rnd(min, max);
+        double value = generate_random_in_range(min, max);
         EXPECT_GE(value, min) << "Generated value is less than min";
         EXPECT_LE(value, max) << "Generated value is greater than max";
     }

@@ -2,9 +2,7 @@
 #define UTIL_H
 
 #include <cstdlib>
-#include <ctime>
-#include <random>
-#include <type_traits>
+#include <time.h>
 
 template <typename T> T clamp(T x, T min, T max) {
     if (x < min) return min;
@@ -13,23 +11,11 @@ template <typename T> T clamp(T x, T min, T max) {
 }
 
 
-template <typename T> T rnd(T min, T max) {
-    // C++11以上のランダムエンジンを使用
-    static std::mt19937 mt(std::random_device{}());
-
-    if constexpr (std::is_integral<T>::value) {
-        // 整数型の場合、std::uniform_int_distributionを使用
-        std::uniform_int_distribution<T> dist(min, max);
-        return dist(mt);
-    } else if constexpr (std::is_floating_point<T>::value) {
-        // 浮動小数点型の場合、std::uniform_real_distributionを使用
-        std::uniform_real_distribution<T> dist(min, max);
-        return dist(mt);
-    } else {
-        // その他の型はサポート外
-        static_assert(std::is_arithmetic<T>::value, "T must be an arithmetic type");
-        return T();
-    }
+template <typename T> T generate_random_in_range(T min, T max) {
+    // 0.0 以上 1.0 未満のランダムな浮動小数点数を生成
+    double normalized_random_value = static_cast<double>(rand()) / RAND_MAX;
+    // [min,max) の実数乱数を返す
+    return min + normalized_random_value * (max - min);
 }
 
 #endif
