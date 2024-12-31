@@ -43,8 +43,8 @@ public:
     }
 
     // ゲッター
-    int get_width() { return width; }
-    int get_height() { return height; }
+    int get_width() const { return width; }
+    int get_height() const { return height; }
 
     // ガンマ補正
     void gamma_correction()
