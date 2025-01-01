@@ -260,6 +260,28 @@ TEST(Vec3Test, CrossProduct)
     EXPECT_EQ(result.z, 5.0) << "z component of cross product should be 5.0";
 }
 
+// spherical_to_cartesianメソッドのテスト
+TEST(Vec3Test, SphericalToCartesianTest)
+{
+    // θ = 0, φ = 0 の場合
+    Vec3 result = spherical_to_cartesian(0, 0);
+    EXPECT_NEAR(result.x, 0, 1e-6);
+    EXPECT_NEAR(result.y, 1, 1e-6);
+    EXPECT_NEAR(result.z, 0, 1e-6);
+
+    // θ = π/2, φ = 0 の場合
+    result = spherical_to_cartesian(M_PI / 2, 0);
+    EXPECT_NEAR(result.x, 0, 1e-6);
+    EXPECT_NEAR(result.y, 0, 1e-6);
+    EXPECT_NEAR(result.z, 1, 1e-6);
+
+    // θ = π/2, φ = π/2 の場合
+    result = spherical_to_cartesian(M_PI / 2, M_PI / 2);
+    EXPECT_NEAR(result.x, 1, 1e-6);
+    EXPECT_NEAR(result.y, 0, 1e-6);
+    EXPECT_NEAR(result.z, 0, 1e-6);
+}
+
 // メイン関数（Google Testのエントリーポイント）
 int main(int argc, char **argv)
 {
