@@ -181,4 +181,20 @@ public:
     }
 };
 
+Vec3 spherical_to_cartesian(double theta, double phi)
+{
+    /**
+     * 球面座標 (theta, phi) を直交座標 (x, y, z) に変換
+     *
+     * 球面座標系での極角 `theta`（y軸からの角度）と方位角 `phi`（xz平面上での角度）を受け取り、
+     * 標準的な球面座標から直交座標への変換式に基づいて、対応する直交座標 (x, y, z) を計算します。
+     *
+     * @param theta 極角（ラジアン単位）。y軸との角度で、範囲は [0, π] です。
+     * @param phi 方位角（ラジアン単位）。xz平面内でz軸からの角度で、範囲は [0, 2π] です。
+     *
+     * @return 対応する直交座標 (x, y, z) を表す `Vec3` オブジェクトを返します。
+     */
+    return Vec3(sin(theta) * sin(phi), cos(theta), sin(theta) * cos(phi));
+}
+
 #endif
