@@ -5,6 +5,7 @@
 #include "vec3.h"
 #include "ray.h"
 #include "hit.h"
+#include "material.h"
 
 class Sphere
 {
@@ -102,6 +103,8 @@ public:
         return Hit(distance, ray(distance), surface_normal, this, is_ray_outside_sphere(ray, surface_normal));
     }
 
+    virtual Material get_material() { return Material(); }
+
     class radius_exception
     {
     private:
@@ -111,6 +114,21 @@ public:
         radius_exception() {}
         const char *get_msg() const { return msg; }
     };
+};
+
+class MaterializedSphere : public Sphere
+{
+private:
+    const Material material;
+
+public:
+    // コンストラクタ
+    MaterializedSphere(const Vec3 &_center, const double _radius, const Material &_material) : Sphere(_center, _radius), material(_material) {}
+
+    Material get_material() const
+    {
+        return material;
+    }
 };
 
 #endif
