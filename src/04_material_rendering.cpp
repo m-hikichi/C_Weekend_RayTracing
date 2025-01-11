@@ -2,6 +2,7 @@
 #include <optional>
 #include "../header/ray.h"
 #include "../header/sphere.h"
+#include "../header/material.h"
 #include "../header/aggregate.h"
 #include "../header/camera.h"
 #include "../header/util.h"
@@ -15,8 +16,9 @@ Color ray_color(const Ray &r, const Aggregate &world, int max_reflection_depth)
     if (result)
     {
         Hit hit = *result;
-        Vec3 reflect_ray = (hit.get_hit_position() + hit.get_hit_normal() + spherical_to_cartesian(generate_random_in_range(0.0, M_PI), generate_random_in_range(0.0, 2 * M_PI))) - hit.get_hit_position();
-        return 0.5 * ray_color(Ray(hit.get_hit_position(), reflect_ray), world, max_reflection_depth + 1);
+        Sphere sphere = *hit.get_sphere();
+        Ray ray = sphere.get_material().sample_ray(hit);
+        return sphere.get_material().get_brdf() * ray_color(ray, world, max_reflection_depth + 1);
     }
     auto t = 0.5 * (r.get_direction().y + 1.0);
     return (1.0 - t) * Color(1) + t * Color(0.5, 0.7, 1.0);
@@ -29,8 +31,8 @@ int main()
     Camera camera(image_width, image_height);
 
     Aggregate world;
-    world.add(std::make_shared<Sphere>(Vec3(0, 0, -1), 0.5));
-    world.add(std::make_shared<Sphere>(Vec3(0, -100.5, -1), 100));
+    world.add(std::make_shared<MaterializedSphere>(Vec3(0, 0, -1), 0.5, Material()));
+    world.add(std::make_shared<MaterializedSphere>(Vec3(0, -100.5, -1), 100, Material()));
 
     const int samples_per_pixel = 100;
 
