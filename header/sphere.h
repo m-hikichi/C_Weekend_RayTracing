@@ -103,7 +103,7 @@ public:
         return Hit(distance, ray(distance), surface_normal, this, is_ray_outside_sphere(ray, surface_normal));
     }
 
-    virtual Material get_material() { return Material(); }
+    virtual Material *get_material() const { return new Material(); }
 
     class radius_exception
     {
