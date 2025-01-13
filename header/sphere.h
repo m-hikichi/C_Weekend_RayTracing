@@ -119,15 +119,16 @@ public:
 class MaterializedSphere : public Sphere
 {
 private:
-    const Material material;
+    const std::shared_ptr<Material> material;
 
 public:
     // コンストラクタ
-    MaterializedSphere(const Vec3 &_center, const double _radius, const Material &_material) : Sphere(_center, _radius), material(_material) {}
+    MaterializedSphere(const Vec3 &_center, const double _radius, const std::shared_ptr<Material> &_material)
+        : Sphere(_center, _radius), material(_material) {}
 
-    Material get_material() const
+    Material *get_material() const
     {
-        return material;
+        return material.get();
     }
 };
 
