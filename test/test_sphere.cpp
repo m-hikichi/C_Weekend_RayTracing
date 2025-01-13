@@ -4,6 +4,9 @@
 #include "../header/sphere.h"
 #include "../header/hit.h"
 
+/**
+ * Sphere クラスのテスト
+ */
 // コンストラクタの動作確認
 TEST(SphereTest, Constructor)
 {
@@ -82,6 +85,36 @@ TEST(SphereTest, RayTangentToSphere)
     EXPECT_EQ(hit.get_distance(), 4.0);
     EXPECT_EQ(hit.get_hit_position(), Vec3(0, 0, 0));
     EXPECT_EQ(hit.get_hit_normal(), Vec3(-1, 0, 0));
+}
+
+/**
+ * MaterializedSphere クラスのテスト
+ */
+// コンストラクタの動作確認
+TEST(MaterializedSphereTest, LambertianConstructor)
+{
+    Color albedo(0.8, 0.6, 0.2);
+    std::shared_ptr<Material> lambertian = std::make_shared<Lambertian>(albedo);
+
+    MaterializedSphere materialized_sphere(Vec3(0), 1.0, lambertian);
+    Material *material = materialized_sphere.get_material();
+
+    EXPECT_EQ(materialized_sphere.get_center(), Vec3(0));
+    EXPECT_DOUBLE_EQ(materialized_sphere.get_radius(), 1.0);
+    EXPECT_EQ(material->get_brdf(), albedo);
+}
+
+TEST(MaterializedSphereTest, MetalConstructor)
+{
+    Color albedo(0.9, 0.7, 0.5);
+    std::shared_ptr<Material> metal = std::make_shared<Metal>(albedo);
+
+    MaterializedSphere materialized_sphere(Vec3(0), 1.0, metal);
+    Material *material = materialized_sphere.get_material();
+
+    EXPECT_EQ(materialized_sphere.get_center(), Vec3(0));
+    EXPECT_DOUBLE_EQ(materialized_sphere.get_radius(), 1.0);
+    EXPECT_EQ(material->get_brdf(), albedo);
 }
 
 // メイン関数（Google Testのエントリーポイント）
