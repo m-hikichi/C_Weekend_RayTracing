@@ -117,6 +117,41 @@ TEST(MaterializedSphereTest, MetalConstructor)
     EXPECT_EQ(material->get_brdf(), albedo);
 }
 
+// 無効な半径で例外スローを確認
+TEST(MaterializedSphereTest, InvalidRadiusThrowsException)
+{
+    Color albedo(0.8, 0.6, 0.2);
+    std::shared_ptr<Material> lambertian = std::make_shared<Lambertian>(albedo);
+
+    EXPECT_THROW(MaterializedSphere invalid_sphere(Vec3(0), 0.0, lambertian), Sphere::radius_exception);
+    EXPECT_THROW(MaterializedSphere invalid_sphere(Vec3(0), -1.0, lambertian), Sphere::radius_exception);
+}
+
+// RayとSphereの交差テスト
+TEST(MaterializedSphereTest, IntersectRay)
+{
+    Vec3 ray_origin(0, 0, -5);
+    Vec3 ray_direction(0, 0, 1);
+    Ray ray(ray_origin, ray_direction);
+
+    Color albedo(0.8, 0.6, 0.2);
+    std::shared_ptr<Material> lambertian = std::make_shared<Lambertian>(albedo);
+    MaterializedSphere materialized_sphere(Vec3(0), 2, lambertian);
+
+    std::optional<Hit> result = materialized_sphere.intersect(ray);
+    ASSERT_TRUE(result) << "Intersection test failed: Expected a valid Hit, but got nullopt.";
+
+    Hit hit = *result;
+    EXPECT_EQ(hit.get_distance(), 3);
+    EXPECT_EQ(hit.get_hit_position(), Vec3(0, 0, -2));
+    EXPECT_EQ(hit.get_hit_normal(), Vec3(0, 0, -1));
+    ASSERT_TRUE(hit.check_ray_outside_sphere());
+
+    const Sphere *hit_sphere = hit.get_sphere();
+    Material *material = hit_sphere->get_material();
+    EXPECT_EQ(material->get_brdf(), albedo);
+}
+
 // メイン関数（Google Testのエントリーポイント）
 int main(int argc, char **argv)
 {
