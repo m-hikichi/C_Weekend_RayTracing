@@ -66,11 +66,11 @@ public:
         double distance;
 
         // D < 0 の場合，交差していない
-        if (D < 0)
+        if (D < -Hit::MIN_DISTANCE)
             return std::nullopt;
 
         // D = 0 の場合，接する
-        else if (D == 0)
+        else if (-Hit::MIN_DISTANCE <= D && D <= Hit::MIN_DISTANCE)
         {
             distance = -b;
         }
@@ -82,7 +82,7 @@ public:
             double d2 = -b + std::sqrt(D);
 
             // レイの飛ばした逆方向で交差している場合
-            if (d1 < 0 && d2 < 0)
+            if (d1 < Hit::MIN_DISTANCE && d2 < Hit::MIN_DISTANCE)
                 return std::nullopt;
 
             // 交差地点が非常に遠い場合
@@ -99,8 +99,9 @@ public:
             }
         }
 
-        Vec3 surface_normal = ray(distance) - center;
-        return Hit(distance, ray(distance), surface_normal, this, is_ray_outside_sphere(ray, surface_normal));
+        Vec3 hit_position = ray(distance);
+        Vec3 surface_normal = hit_position - center;
+        return Hit(distance, hit_position, surface_normal, this, is_ray_outside_sphere(ray, surface_normal));
     }
 
     virtual Material *get_material() const { return new Material(); }

@@ -23,7 +23,7 @@ TEST(HitTest, ConstructorTest) {
 // MAX_DISTANCE と MIN_DISTANCE のテスト
 TEST(HitTest, MaxMinDistanceTest) {
     EXPECT_DOUBLE_EQ(Hit::MAX_DISTANCE, 10000.0);
-    EXPECT_DOUBLE_EQ(Hit::MIN_DISTANCE, 0.0);
+    EXPECT_DOUBLE_EQ(Hit::MIN_DISTANCE, 1e-6);
 }
 
 // `operator=` のテスト

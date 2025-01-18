@@ -15,7 +15,7 @@ private:
 
 public:
     static constexpr double MAX_DISTANCE{10000.0};
-    static constexpr double MIN_DISTANCE{0.0};
+    static constexpr double MIN_DISTANCE{1e-6};
 
     Hit(double _distance, const Vec3 &_hit_position, const Vec3 &_hit_normal, const Sphere *_hit_sphere, const bool _is_ray_outside_sphere) : distance(_distance), hit_position(_hit_position), hit_normal(_hit_normal.normalize()), hit_sphere(_hit_sphere), is_ray_outside_sphere(_is_ray_outside_sphere) {}
 
