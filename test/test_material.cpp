@@ -58,12 +58,12 @@ TEST(LambertianTest, GetBRDFPointer)
     delete lambertian;
 }
 
-// Metal クラスのテスト
-TEST(MetalTest, SampleRay)
+// Mirror クラスのテスト
+TEST(MirrorTest, SampleRay)
 {
     // アルベド（反射率）を設定
     Color albedo(0.9, 0.7, 0.5);
-    Metal metal(albedo);
+    Mirror mirror(albedo);
 
     // ヒット位置と法線の設定
     Vec3 hit_position(1.0, 2.0, 3.0);
@@ -75,7 +75,7 @@ TEST(MetalTest, SampleRay)
     Hit hit(10, hit_position, hit_normal, nullptr, true);
 
     // 反射ベクトルを計算する
-    Ray reflect_ray = metal.sample_ray(injection_ray, hit);
+    Ray reflect_ray = mirror.sample_ray(injection_ray, hit);
     // 入力レイの始点が反射レイの始点と一致するか確認
     EXPECT_EQ(reflect_ray.get_origin(), hit_position);
     // 反射ベクトルの方向が期待通りか確認
@@ -85,33 +85,33 @@ TEST(MetalTest, SampleRay)
     EXPECT_NEAR(reflect_ray.get_direction().z, spherical_to_cartesian(M_PI / 3, M_PI / 6 + M_PI).z, 1e-6);
 }
 
-TEST(MetalTest, GetBRDFDirect)
+TEST(MirrorTest, GetBRDFDirect)
 {
     // アルベド（反射率）の設定
     Color albedo(0.9, 0.7, 0.5);
 
-    // Metalオブジェクトを直接作成
-    Metal metal(albedo);
+    // Mirrorオブジェクトを直接作成
+    Mirror mirror(albedo);
 
     // get_brdf がアルベドを返すか確認
-    Color brdf = metal.get_brdf();
+    Color brdf = mirror.get_brdf();
     EXPECT_EQ(brdf, albedo);
 }
 
-TEST(MetalTest, GetBRDFPointer)
+TEST(MirrorTest, GetBRDFPointer)
 {
     // アルベド（反射率）の設定
     Color albedo(0.9, 0.7, 0.5);
 
-    // Materialポインタを使ってMetalオブジェクトを作成
-    Material *metal = new Metal(albedo);
+    // Materialポインタを使ってMirrorオブジェクトを作成
+    Material *mirror = new Mirror(albedo);
 
     // get_brdf がアルベドを返すか確認
-    Color brdf = metal->get_brdf();
+    Color brdf = mirror->get_brdf();
     EXPECT_EQ(brdf, albedo);
 
     // メモリ解放
-    delete metal;
+    delete mirror;
 }
 
 // メイン関数（Google Testのエントリーポイント）

@@ -51,7 +51,7 @@ public:
     }
 };
 
-class Metal : public Material
+class Mirror : public Material
 {
 private:
     Color albedo;
@@ -63,7 +63,7 @@ private:
     }
 
 public:
-    Metal(const Color &_albedo) : albedo(_albedo) {}
+    Mirror(const Color &_albedo) : albedo(_albedo) {}
 
     Ray sample_ray(const Ray &injection_ray, const Hit &hit) const
     {

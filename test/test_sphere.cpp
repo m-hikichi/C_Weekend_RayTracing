@@ -104,12 +104,12 @@ TEST(MaterializedSphereTest, LambertianConstructor)
     EXPECT_EQ(material->get_brdf(), albedo);
 }
 
-TEST(MaterializedSphereTest, MetalConstructor)
+TEST(MaterializedSphereTest, MirrorConstructor)
 {
     Color albedo(0.9, 0.7, 0.5);
-    std::shared_ptr<Material> metal = std::make_shared<Metal>(albedo);
+    std::shared_ptr<Material> mirror = std::make_shared<Mirror>(albedo);
 
-    MaterializedSphere materialized_sphere(Vec3(0), 1.0, metal);
+    MaterializedSphere materialized_sphere(Vec3(0), 1.0, mirror);
     Material *material = materialized_sphere.get_material();
 
     EXPECT_EQ(materialized_sphere.get_center(), Vec3(0));

@@ -32,8 +32,8 @@ int main()
 
     Aggregate world;
     world.add(std::make_shared<MaterializedSphere>(Vec3(0, 0, -1), 0.5, std::make_shared<Lambertian>(Color(0.7, 0.3, 0.3))));
-    world.add(std::make_shared<MaterializedSphere>(Vec3(1, 0, -1), 0.5, std::make_shared<Metal>(Color(0.8, 0.6, 0.2))));
-    world.add(std::make_shared<MaterializedSphere>(Vec3(-1, 0, -1), 0.5, std::make_shared<Metal>(Color(0.8))));
+    world.add(std::make_shared<MaterializedSphere>(Vec3(1, 0, -1), 0.5, std::make_shared<Mirror>(Color(0.8, 0.6, 0.2))));
+    world.add(std::make_shared<MaterializedSphere>(Vec3(-1, 0, -1), 0.5, std::make_shared<Mirror>(Color(0.8))));
     world.add(std::make_shared<MaterializedSphere>(Vec3(0, -100.5, -1), 100, std::make_shared<Lambertian>(Color(0.8, 0.8, 0.0))));
 
     const int samples_per_pixel = 100;
