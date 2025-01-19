@@ -10,15 +10,15 @@
 Color ray_color(const Ray &r, const Aggregate &world, int max_reflection_depth)
 {
     if (max_reflection_depth > 10)
-        return Color(0);
+        return Color();
 
     std::optional<Hit> result = world.intersect(r);
     if (result)
     {
         Hit hit = *result;
-        Sphere sphere = *hit.get_sphere();
-        Ray ray = sphere.get_material().sample_ray(hit);
-        return sphere.get_material().get_brdf() * ray_color(ray, world, max_reflection_depth + 1);
+        const Sphere* sphere = hit.get_sphere();
+        Ray ray = sphere->get_material()->sample_ray(r, hit);
+        return sphere->get_material()->get_brdf() * ray_color(ray, world, max_reflection_depth + 1);
     }
     auto t = 0.5 * (r.get_direction().y + 1.0);
     return (1.0 - t) * Color(1) + t * Color(0.5, 0.7, 1.0);
@@ -31,8 +31,10 @@ int main()
     Camera camera(image_width, image_height);
 
     Aggregate world;
-    world.add(std::make_shared<MaterializedSphere>(Vec3(0, 0, -1), 0.5, Material()));
-    world.add(std::make_shared<MaterializedSphere>(Vec3(0, -100.5, -1), 100, Material()));
+    world.add(std::make_shared<MaterializedSphere>(Vec3(0, 0, -1), 0.5, std::make_shared<Lambertian>(Color(0.7, 0.3, 0.3))));
+    world.add(std::make_shared<MaterializedSphere>(Vec3(1, 0, -1), 0.5, std::make_shared<Metal>(Color(0.8, 0.6, 0.2))));
+    world.add(std::make_shared<MaterializedSphere>(Vec3(-1, 0, -1), 0.5, std::make_shared<Metal>(Color(0.8))));
+    world.add(std::make_shared<MaterializedSphere>(Vec3(0, -100.5, -1), 100, std::make_shared<Lambertian>(Color(0.8, 0.8, 0.0))));
 
     const int samples_per_pixel = 100;
 
