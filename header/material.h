@@ -11,7 +11,7 @@
 class Material
 {
 public:
-    virtual Ray sample_ray(const Ray &injection_ray, const Hit &hit) const
+    virtual Ray sample_ray(const Ray &incident_ray, const Hit &hit) const
     {
         return Ray(Vec3(), Vec3());
     }
@@ -30,7 +30,7 @@ private:
 public:
     Lambertian(const Color &_albedo) : albedo(_albedo) {}
 
-    Ray sample_ray(const Ray &infection_ray, const Hit &hit) const
+    Ray sample_ray(const Ray &incident_ray, const Hit &hit) const
     {
         Vec3 random_vector_on_sphere = spherical_to_cartesian(generate_random_in_range(0.0, M_PI), generate_random_in_range(0.0, 2 * M_PI));
         if (dot(hit.get_hit_normal(), random_vector_on_sphere) > 0)
@@ -56,23 +56,55 @@ class Mirror : public Material
 private:
     Color albedo;
 
-    Vec3 mirror_reflect(const Vec3 &injection, const Vec3 &normal) const
+    Vec3 mirror_reflect(const Vec3 &incident, const Vec3 &normal) const
     {
-        Vec3 reflect = injection - 2 * dot(injection, normal) * normal;
+        Vec3 reflect = incident - 2 * dot(incident, normal) * normal;
         return reflect.normalize();
     }
 
 public:
     Mirror(const Color &_albedo) : albedo(_albedo) {}
 
-    Ray sample_ray(const Ray &injection_ray, const Hit &hit) const
+    Ray sample_ray(const Ray &incident_ray, const Hit &hit) const
     {
-        return Ray(hit.get_hit_position(), mirror_reflect(injection_ray.get_direction(), hit.get_hit_normal()));
+        return Ray(hit.get_hit_position(), mirror_reflect(incident_ray.get_direction(), hit.get_hit_normal()));
     }
 
     Color get_brdf() const
     {
         return albedo;
+    }
+};
+
+class Glass : public Material
+{
+private:
+    double refractive_index;
+
+    Vec3 refract(const Vec3 &incident, const Vec3 &normal, const double eta_incident, const double eta_transmitted) const {
+        double cos_theta = dot(-incident, normal);
+        Vec3 refract_parallel = (eta_incident / eta_transmitted) * (incident + cos_theta * normal);
+        Vec3 refract_perpendicular = -sqrt(1.0 - refract_parallel.norm() * refract_parallel.norm()) * normal;
+        return refract_parallel + refract_perpendicular;
+    }
+
+public:
+    Glass(const double _refractive_index) : refractive_index(_refractive_index) {}
+
+    Ray sample_ray(const Ray &incident_ray, const Hit &hit) const
+    {
+        if (hit.check_ray_outside_sphere()) {
+            return Ray(hit.get_hit_position(), refract(incident_ray.get_direction(), hit.get_hit_normal(), 1.0, refractive_index));
+        }
+        else {
+            // 法線が必ず物体の"外側"を向く仕様であるため，法線の向きを逆転
+            return Ray(hit.get_hit_position(), refract(incident_ray.get_direction(), -hit.get_hit_normal(), refractive_index, 1.0));
+        }
+    }
+
+    Color get_brdf() const
+    {
+        return Color(1.0);
     }
 };
 
