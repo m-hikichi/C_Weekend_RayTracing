@@ -81,11 +81,18 @@ class Glass : public Material
 private:
     double refractive_index;
 
-    Vec3 refract(const Vec3 &incident, const Vec3 &normal, const double eta_incident, const double eta_transmitted) const {
+    Vec3 refract(const Vec3 &incident, const Vec3 &normal, const double eta_incident, const double eta_transmitted) const
+    {
         double cos_theta = dot(-incident, normal);
         Vec3 refract_parallel = (eta_incident / eta_transmitted) * (incident + cos_theta * normal);
         Vec3 refract_perpendicular = -sqrt(1.0 - refract_parallel.norm() * refract_parallel.norm()) * normal;
         return refract_parallel + refract_perpendicular;
+    }
+
+    Vec3 mirror_reflect(const Vec3 &incident, const Vec3 &normal) const
+    {
+        Vec3 reflect = incident - 2 * dot(incident, normal) * normal;
+        return reflect.normalize();
     }
 
 public:
@@ -93,12 +100,24 @@ public:
 
     Ray sample_ray(const Ray &incident_ray, const Hit &hit) const
     {
-        if (hit.check_ray_outside_sphere()) {
-            return Ray(hit.get_hit_position(), refract(incident_ray.get_direction(), hit.get_hit_normal(), 1.0, refractive_index));
+        double cos_theta = dot(-incident_ray.get_direction(), hit.get_hit_normal());
+        double sin_theta = sqrt(1 - cos_theta * cos_theta);
+        if (hit.check_ray_outside_sphere())
+        {
+            if ((1.0 / refractive_index) * sin_theta > 1.0)
+                // 全反射
+                return Ray(hit.get_hit_position(), mirror_reflect(incident_ray.get_direction(), hit.get_hit_normal()));
+            else
+                return Ray(hit.get_hit_position(), refract(incident_ray.get_direction(), hit.get_hit_normal(), 1.0, refractive_index));
         }
-        else {
-            // 法線が必ず物体の"外側"を向く仕様であるため，法線の向きを逆転
-            return Ray(hit.get_hit_position(), refract(incident_ray.get_direction(), -hit.get_hit_normal(), refractive_index, 1.0));
+        else
+        {
+            if ((refractive_index / 1.0) * sin_theta > 1.0)
+                // 全反射
+                return Ray(hit.get_hit_position(), mirror_reflect(incident_ray.get_direction(), hit.get_hit_normal()));
+            else
+                // 法線が必ず物体の"外側"を向く仕様であるため，法線の向きを逆転
+                return Ray(hit.get_hit_position(), refract(incident_ray.get_direction(), -hit.get_hit_normal(), refractive_index, 1.0));
         }
     }
 
