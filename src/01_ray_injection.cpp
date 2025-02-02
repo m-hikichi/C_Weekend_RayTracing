@@ -12,7 +12,7 @@ int main()
 {
     const int image_width = 640;
     const int image_height = 480;
-    Image i(image_width, image_height);
+    Image image(image_width, image_height);
 
     const double aspect_ratio = double(image_width) / double(image_height);
     const double viewport_height = 2.0;
@@ -32,8 +32,8 @@ int main()
             double v = 1.0 - (double(h) + 0.5) / double(image_height);
             Ray r(origin, left_lower_corner + u * horizon + v * vertical - origin);
             Color pixel_color = ray_color(r);
-            i.set_pixel(w, h, pixel_color);
+            image.set_pixel(w, h, pixel_color);
         }
     }
-    i.save_png("../image/ray_injection.png");
+    image.save_png("../image/01_ray_injection.png");
 }

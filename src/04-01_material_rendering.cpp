@@ -1,10 +1,10 @@
 #include <iostream>
 #include <optional>
-#include "../header/ray.h"
-#include "../header/sphere.h"
-#include "../header/material.h"
 #include "../header/aggregate.h"
 #include "../header/camera.h"
+#include "../header/material.h"
+#include "../header/ray.h"
+#include "../header/sphere.h"
 #include "../header/util.h"
 
 Color ray_color(const Ray &r, const Aggregate &world, int max_reflection_depth)
@@ -52,5 +52,5 @@ int main()
         }
     }
     camera.get_image().gamma_correction();
-    camera.get_image().save_png("../image/material_rendering.png");
+    camera.get_image().save_png("../image/04-01_material_rendering.png");
 }

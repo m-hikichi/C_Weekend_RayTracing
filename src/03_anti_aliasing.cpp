@@ -1,9 +1,9 @@
 #include <iostream>
 #include <optional>
-#include "../header/ray.h"
-#include "../header/sphere.h"
 #include "../header/aggregate.h"
 #include "../header/camera.h"
+#include "../header/ray.h"
+#include "../header/sphere.h"
 #include "../header/util.h"
 
 Color ray_color(const Ray &r, const Aggregate& world)
@@ -42,5 +42,5 @@ int main()
             camera.get_image().set_pixel(w, h, pixel_color / samples_per_pixel);
         }
     }
-    camera.get_image().save_png("../image/anti_aliasing.png");
+    camera.get_image().save_png("../image/03_anti_aliasing.png");
 }

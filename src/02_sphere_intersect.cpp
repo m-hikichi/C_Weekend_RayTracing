@@ -1,10 +1,10 @@
 #include <iostream>
 #include <optional>
+#include "../header/aggregate.h"
+#include "../header/hit.h"
 #include "../header/image.h"
 #include "../header/ray.h"
 #include "../header/sphere.h"
-#include "../header/hit.h"
-#include "../header/aggregate.h"
 
 Color ray_color(const Ray &r, const Aggregate& world)
 {
@@ -22,7 +22,7 @@ int main()
 {
     const int image_width = 640;
     const int image_height = 480;
-    Image i(image_width, image_height);
+    Image image(image_width, image_height);
 
     const double aspect_ratio = double(image_width) / double(image_height);
     const double viewport_height = 2.0;
@@ -46,8 +46,8 @@ int main()
             double v = 1.0 - (double(h) + 0.5) / double(image_height);
             Ray r(origin, left_lower_corner + u * horizon + v * vertical - origin);
             Color pixel_color = ray_color(r, world);
-            i.set_pixel(w, h, pixel_color);
+            image.set_pixel(w, h, pixel_color);
         }
     }
-    i.save_png("../image/sphere_intersect.png");
+    image.save_png("../image/02_sphere_intersect.png");
 }
