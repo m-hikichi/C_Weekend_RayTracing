@@ -8,6 +8,7 @@
 class Camera
 {
 private:
+    const double vertical_field_of_view; // 垂直方向の視野角（弧度法）
     const Image image;
     Vec3 origin;
     Vec3 horizon;
@@ -15,10 +16,11 @@ private:
     Vec3 left_lower_corner;
 
 public:
-    Camera(int _image_width, int _image_height) : image(Image(_image_width, _image_height))
+    Camera(int _image_width, int _image_height, const double _vertical_fov = M_PI / 2)
+        : image(Image(_image_width, _image_height)), vertical_field_of_view(_vertical_fov)
     {
         const double aspect_ratio = double(_image_width) / double(_image_height);
-        const double viewport_height = 2.0;
+        const double viewport_height = 2.0 * tan(vertical_field_of_view / 2);
         const double viewport_width = aspect_ratio * viewport_height;
         const double focal_length = 1.0;
 
