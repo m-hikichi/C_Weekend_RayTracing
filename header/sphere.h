@@ -127,7 +127,7 @@ public:
     MaterializedSphere(const Vec3 &_center, const double _radius, const std::shared_ptr<Material> &_material)
         : Sphere(_center, _radius), material(_material) {}
 
-    Material *get_material() const
+    Material *get_material() const override
     {
         return material.get();
     }
