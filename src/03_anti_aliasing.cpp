@@ -22,7 +22,7 @@ int main()
 {
     const int image_width = 640;
     const int image_height = 480;
-    Camera camera(image_width, image_height);
+    PinholeCamera camera(image_width, image_height);
 
     Aggregate world;
     world.add(std::make_shared<Sphere>(Vec3(0, 0, -1), 0.5));

@@ -29,7 +29,7 @@ int main()
     const int image_width = 640;
     const int image_height = 480;
     const double vertical_fov = M_PI / 2;
-    Camera camera(image_width, image_height, vertical_fov);
+    PinholeCamera camera(image_width, image_height, Ray(Vec3(), Vec3(0, 0, -1)), vertical_fov);
 
     Aggregate world;
     double radius = cos(M_PI / 4);
@@ -51,5 +51,5 @@ int main()
             camera.get_image().set_pixel(w, h, pixel_color / samples_per_pixel);
         }
     }
-    camera.get_image().save_png("../image/05_fov_control.png");
+    camera.get_image().save_png("../image/05-01_fov_control.png");
 }
