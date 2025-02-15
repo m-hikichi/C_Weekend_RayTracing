@@ -31,8 +31,9 @@ int main()
     const Vec3 look_from = Vec3(13, 2, 3);
     const Vec3 look_at = Vec3(0);
     const Ray view_direction = Ray(look_from, look_at - look_from);
+    const double focus_distance = 10.0;
     const double vertical_fov = M_PI / 9;
-    PinholeCamera camera(image_width, image_height, view_direction, vertical_fov);
+    ThinLensCamera camera(image_width, image_height, view_direction, 0.2, focus_distance, vertical_fov);
 
     Aggregate world;
     std::shared_ptr<Material> ground_material = std::make_shared<Lambertian>(Color(0.5));
