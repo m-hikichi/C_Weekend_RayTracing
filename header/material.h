@@ -30,12 +30,12 @@ public:
         if (dot(hit.get_hit_normal(), random_vector_on_sphere) > 0)
         {
             // random_vector_on_sphere が normal と同じ半球（反射ベクトル）である場合
-            return Ray(hit.get_hit_position(), hit.get_hit_position() + random_vector_on_sphere);
+            return Ray(hit.get_hit_position(), random_vector_on_sphere);
         }
         else
         {
             // random_vector_on_sphere が normal と異なる半球（屈折ベクトル）である場合
-            return Ray(hit.get_hit_position(), hit.get_hit_position() + (-random_vector_on_sphere));
+            return Ray(hit.get_hit_position(), -random_vector_on_sphere);
         }
     }
 
