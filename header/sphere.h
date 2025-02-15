@@ -104,7 +104,7 @@ public:
         return Hit(distance, hit_position, surface_normal, this, is_ray_outside_sphere(ray, surface_normal));
     }
 
-    virtual Material *get_material() const { return new Material(); }
+    virtual Material *get_material() const { return new Lambertian(Color(0)); }
 
     class radius_exception
     {

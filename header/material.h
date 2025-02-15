@@ -11,15 +11,9 @@
 class Material
 {
 public:
-    virtual Ray sample_ray(const Ray &incident_ray, const Hit &hit) const
-    {
-        return Ray(Vec3(), Vec3());
-    }
+    virtual Ray sample_ray(const Ray &incident_ray, const Hit &hit) const = 0;
 
-    virtual Color get_brdf() const
-    {
-        return Color();
-    }
+    virtual Color get_brdf() const = 0;
 };
 
 class Lambertian : public Material
@@ -30,7 +24,7 @@ private:
 public:
     Lambertian(const Color &_albedo) : albedo(_albedo) {}
 
-    Ray sample_ray(const Ray &incident_ray, const Hit &hit) const
+    Ray sample_ray(const Ray &incident_ray, const Hit &hit) const override
     {
         Vec3 random_vector_on_sphere = spherical_to_cartesian(generate_random_in_range(0.0, M_PI), generate_random_in_range(0.0, 2 * M_PI));
         if (dot(hit.get_hit_normal(), random_vector_on_sphere) > 0)
@@ -45,7 +39,7 @@ public:
         }
     }
 
-    Color get_brdf() const
+    Color get_brdf() const override
     {
         return albedo;
     }
@@ -65,12 +59,12 @@ private:
 public:
     Mirror(const Color &_albedo) : albedo(_albedo) {}
 
-    Ray sample_ray(const Ray &incident_ray, const Hit &hit) const
+    Ray sample_ray(const Ray &incident_ray, const Hit &hit) const override
     {
         return Ray(hit.get_hit_position(), mirror_reflect(incident_ray.get_direction(), hit.get_hit_normal()));
     }
 
-    Color get_brdf() const
+    Color get_brdf() const override
     {
         return albedo;
     }
@@ -98,7 +92,7 @@ private:
 public:
     Glass(const double _refractive_index) : refractive_index(_refractive_index) {}
 
-    Ray sample_ray(const Ray &incident_ray, const Hit &hit) const
+    Ray sample_ray(const Ray &incident_ray, const Hit &hit) const override
     {
         double cos_theta = dot(-incident_ray.get_direction(), hit.get_hit_normal());
         double sin_theta = sqrt(1 - cos_theta * cos_theta);
@@ -121,7 +115,7 @@ public:
         }
     }
 
-    Color get_brdf() const
+    Color get_brdf() const override
     {
         return Color(1.0);
     }
