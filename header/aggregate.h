@@ -18,7 +18,8 @@ public:
         return spheres;
     }
 
-    void clear() {
+    void clear()
+    {
         spheres.clear();
     }
 
