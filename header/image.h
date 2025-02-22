@@ -7,14 +7,15 @@
 #include "color.h"
 #define STB_IMAGE_WRITE_STATIC
 #define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb/stb_image.h"
 #include "stb/stb_image_write.h"
 
 class Image
 {
 private:
-    const int width;
-    const int height;
-    const int channels{3};
+    int width;
+    int height;
+    int channels{3};
     Color **data;
 
 public:
@@ -26,6 +27,30 @@ public:
         {
             data[x] = new Color[height];
         }
+    }
+
+    Image(const char *_filename)
+    {
+        float *image;
+        image = stbi_loadf(_filename, &width, &height, &channels, 0);
+
+        data = new Color *[width];
+        for (int x = 0; x < width; x++)
+        {
+            data[x] = new Color[height];
+        }
+
+        int index;
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                index = channels * x + channels * width * y;
+                data[x][y] = Color(image[index], image[index + 1], image[index + 2]);
+            }
+        }
+        // 画像読み込み後に解放
+        stbi_image_free(image);
     }
 
     // デストラクタ
@@ -45,6 +70,7 @@ public:
     // ゲッター
     int get_width() const { return width; }
     int get_height() const { return height; }
+    Color get_pixel(int x, int y) const { return data[x][y]; }
 
     // ガンマ補正
     void gamma_correction()
