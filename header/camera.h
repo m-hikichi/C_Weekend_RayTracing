@@ -11,6 +11,7 @@ protected:
     const Image image;
     const Ray view_direction;
     const double vertical_field_of_view; // 垂直方向の視野角（弧度法）
+    Vec3 u, v, w; // カメラの向きを表す正規直交規定(u, v, w)
     Vec3 horizon;
     Vec3 vertical;
     Vec3 left_lower_corner;
@@ -52,11 +53,11 @@ public:
         const double viewport_height = 2.0 * tan(vertical_field_of_view / 2);
         const double viewport_width = aspect_ratio * viewport_height;
 
-        // カメラの向きを表す正規直交規定(u, v, w)の定義
+        // カメラの向きを表す正規直交規定(u, v, w)の算出
         const Vec3 view_up = Vec3(0, 1, 0);
-        const Vec3 w = -view_direction.get_direction();
-        const Vec3 u = cross(view_up, w).normalize();
-        const Vec3 v = cross(w, u).normalize();
+        w = -view_direction.get_direction();
+        u = cross(view_up, w).normalize();
+        v = cross(w, u).normalize();
 
         horizon = viewport_width * u;
         vertical = viewport_height * v;
@@ -66,9 +67,9 @@ public:
     Ray get_ray(const int pixel_x, const int pixel_y) const override
     {
         // アンチエイリアシングを行うために、ピクセル内のランダムな地点を通るサンプルの生成
-        double u = (double(pixel_x) + generate_random_in_range(.0, 1.0)) / double(image.get_width());
-        double v = 1.0 - (double(pixel_y) + generate_random_in_range(.0, 1.0)) / double(image.get_height());
-        return Ray(view_direction.get_origin(), left_lower_corner + u * horizon + v * vertical - view_direction.get_origin());
+        double s = (double(pixel_x) + generate_random_in_range(.0, 1.0)) / double(image.get_width());
+        double t = 1.0 - (double(pixel_y) + generate_random_in_range(.0, 1.0)) / double(image.get_height());
+        return Ray(view_direction.get_origin(), left_lower_corner + s * horizon + t * vertical - view_direction.get_origin());
     }
 };
 
@@ -95,9 +96,9 @@ public:
 
         // カメラの向きを表す正規直交規定(u, v, w)の定義
         const Vec3 view_up = Vec3(0, 1, 0);
-        const Vec3 w = -view_direction.get_direction();
-        const Vec3 u = cross(view_up, w).normalize();
-        const Vec3 v = cross(w, u).normalize();
+        w = -view_direction.get_direction();
+        u = cross(view_up, w).normalize();
+        v = cross(w, u).normalize();
 
         horizon = _focus_distance * viewport_width * u;
         vertical = _focus_distance * viewport_height * v;
@@ -107,13 +108,8 @@ public:
     Ray get_ray(const int pixel_x, const int pixel_y) const override
     {
         // レンズから放たれるレイ
-        Vec3 lens_sample = lens_radius * (Vec3(generate_random_in_range(.0, 1.0), generate_random_in_range(.0, 1.0), 0));
-
-        // カメラの向きを表す正規直交規定(u, v, w)の定義
-        const Vec3 view_up = Vec3(0, 1, 0);
-        const Vec3 w = -view_direction.get_direction();
-        const Vec3 u = cross(view_up, w).normalize();
-        const Vec3 v = cross(w, u).normalize();
+        double theta = generate_random_in_range(.0, 2 * M_PI);
+        Vec3 lens_sample = generate_random_in_range(.0, lens_radius) * Vec3(cos(theta), sin(theta), 0);
         Vec3 offset = lens_sample.x * u + lens_sample.y * v;
 
         // アンチエイリアシングを行うために、ピクセル内のランダムな地点を通るサンプルの生成
