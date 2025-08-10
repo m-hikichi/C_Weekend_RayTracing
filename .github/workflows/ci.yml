@@ -1,0 +1,56 @@
+name: C++ CI (GoogleTest)
+
+# すべてのブランチへの push と PR で実行
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest  # Ubuntu 環境で実行
+
+    steps:
+      # 1. リポジトリを取得
+      - name: ソースコードをチェックアウト
+        uses: actions/checkout@v4
+
+      # 2. 必要なパッケージをインストール
+      #    - build-essential: g++ や make を含むビルドツール
+      #    - cmake: GoogleTest のビルドに必要
+      #    - libgtest-dev: GoogleTest のソースコード
+      - name: 依存パッケージのインストール
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake libgtest-dev
+
+      # 3. GoogleTest をビルドして /usr/lib にコピー
+      #    Ubuntu の libgtest-dev はソースのみなので自分でビルドする必要がある
+      - name: GoogleTest のビルド
+        run: |
+          cd /usr/src/googletest
+          sudo cmake .
+          sudo make
+          sudo cp lib/*.a /usr/lib
+
+      # 4. テストコードをコンパイル
+      #    test ディレクトリの中にある cpp ファイルをすべてコンパイル
+      #    -std=c++17: C++17 を使う
+      #    -pthread: スレッド関連の機能を使うため
+      #    -lgtest -lgtest_main: GoogleTest のライブラリをリンク
+      - name: テストのコンパイル
+        run: |
+          mkdir -p build
+          for file in test/*.cpp; do
+            exe_name=$(basename "$file" .cpp)
+            g++ "$file" -o "build/$exe_name" -std=c++17 -lgtest -lgtest_main -pthread
+          done
+
+      # 5. テストの実行
+      - name: テストの実行
+        run: |
+          for exe in build/*; do
+            echo "=== 実行中: $exe ==="
+            "$exe"
+          done
